@@ -9,15 +9,11 @@ open import Prelude as ℙ
     ; length
     ; id
     ; _∘_
+    ; _⊔_
+    ; _×_
     )
   renaming
-    ( _∎ to _■
-    ; refl to 𝕣
-    ; sym to 𝕤
-    ; trans to 𝕥
-    ; _⊔_ to lmax
-    ; Either to _ℙ+_
-    ; _×_ to _ℙ×_
+    ( Either to _ℙ+_
     ; left to inl
     ; right to inr
     )
@@ -26,7 +22,7 @@ open import Data.Integer
 
 instance
   SemiringSet : Semiring Set
-  SemiringSet = record { zro = ⊥ ; one = ⊤ ; _+_ = _ℙ+_ ; _*_ = _ℙ×_ }
+  SemiringSet = record { zro = ⊥ ; one = ⊤ ; _+_ = _ℙ+_ ; _*_ = ℙ._×_ }
 
 infixr 3 _+++_
 _+++_ : ∀ {a b c d}
@@ -38,7 +34,7 @@ f +++ g = either (inl ℙ.∘ f) (inr ℙ.∘ g)
 infix 4 _≃_
 _≃_ : ∀ {a b} {A : Set a} {B : A → Set b}
     → (f g : ∀ x → B x)
-    → Set (lmax a b)
+    → Set (a ℙ.⊔ b)
 f ≃ g = ∀ x → f x ≡ g x
 
 infixr 6 _⊕_
@@ -146,37 +142,37 @@ fwd-bwd : ∀ {A B}
         → bwd f ℙ.∘ fwd f ≃ ℙ.id
 
 fwd-bwd ⊕λ (inl ())
-fwd-bwd ⊕λ (inr x)       = 𝕣
-fwd-bwd ⊕ρ (inl x)       = 𝕣
+fwd-bwd ⊕λ (inr x)       = ℙ.refl
+fwd-bwd ⊕ρ (inl x)       = ℙ.refl
 fwd-bwd ⊕ρ (inr ())
-fwd-bwd ⊕σ (inl x)       = 𝕣
-fwd-bwd ⊕σ (inr x)       = 𝕣
-fwd-bwd ⊕α (inl (inl x)) = 𝕣
-fwd-bwd ⊕α (inl (inr x)) = 𝕣
-fwd-bwd ⊕α (inr x)       = 𝕣
-fwd-bwd ⊗λ (tt , x)      = 𝕣
-fwd-bwd ⊗ρ (x , tt)      = 𝕣
-fwd-bwd ⊗σ (x , y)       = 𝕣
-fwd-bwd ⊗α ((x , y) , z) = 𝕣
-fwd-bwd δ (x , inl y)    = 𝕣
-fwd-bwd δ (x , inr y)    = 𝕣
+fwd-bwd ⊕σ (inl x)       = ℙ.refl
+fwd-bwd ⊕σ (inr x)       = ℙ.refl
+fwd-bwd ⊕α (inl (inl x)) = ℙ.refl
+fwd-bwd ⊕α (inl (inr x)) = ℙ.refl
+fwd-bwd ⊕α (inr x)       = ℙ.refl
+fwd-bwd ⊗λ (tt , x)      = ℙ.refl
+fwd-bwd ⊗ρ (x , tt)      = ℙ.refl
+fwd-bwd ⊗σ (x , y)       = ℙ.refl
+fwd-bwd ⊗α ((x , y) , z) = ℙ.refl
+fwd-bwd δ (x , inl y)    = ℙ.refl
+fwd-bwd δ (x , inr y)    = ℙ.refl
 
 bwd-fwd : ∀ {A B}
         → (f : A ∼ B)
         → fwd f ℙ.∘ bwd f ≃ ℙ.id
-bwd-fwd ⊕λ x             = 𝕣
-bwd-fwd ⊕ρ x             = 𝕣
-bwd-fwd ⊕σ (inl x)       = 𝕣
-bwd-fwd ⊕σ (inr x)       = 𝕣
-bwd-fwd ⊕α (inl x)       = 𝕣
-bwd-fwd ⊕α (inr (inl x)) = 𝕣
-bwd-fwd ⊕α (inr (inr x)) = 𝕣
-bwd-fwd ⊗λ x             = 𝕣
-bwd-fwd ⊗ρ x             = 𝕣
-bwd-fwd ⊗σ (x , y)       = 𝕣
-bwd-fwd ⊗α (x , y , z)   = 𝕣
-bwd-fwd δ (inl (x , y))  = 𝕣
-bwd-fwd δ (inr (x , y))  = 𝕣
+bwd-fwd ⊕λ x             = ℙ.refl
+bwd-fwd ⊕ρ x             = ℙ.refl
+bwd-fwd ⊕σ (inl x)       = ℙ.refl
+bwd-fwd ⊕σ (inr x)       = ℙ.refl
+bwd-fwd ⊕α (inl x)       = ℙ.refl
+bwd-fwd ⊕α (inr (inl x)) = ℙ.refl
+bwd-fwd ⊕α (inr (inr x)) = ℙ.refl
+bwd-fwd ⊗λ x             = ℙ.refl
+bwd-fwd ⊗ρ x             = ℙ.refl
+bwd-fwd ⊗σ (x , y)       = ℙ.refl
+bwd-fwd ⊗α (x , y , z)   = ℙ.refl
+bwd-fwd δ (inl (x , y))  = ℙ.refl
+bwd-fwd δ (inr (x , y))  = ℙ.refl
 
 ap : ∀ {A B}
    → A ↔ B
@@ -207,7 +203,7 @@ inv-ap : ∀ {A B}
        → ap f ℙ.∘ ap⁻¹ f ≃ ℙ.id
 
 ap-inv [ f ]   x = fwd-bwd f x
-ap-inv id      x = 𝕣
+ap-inv id      x = ℙ.refl
 ap-inv (f ⁻¹)  x = inv-ap f x
 ap-inv (g ∘ f) x =
   ap⁻¹ f $≡ ap-inv g (ap f x)
@@ -217,7 +213,7 @@ ap-inv (f ⊕ g) (inl x)  = inl  $≡ ap-inv f x
 ap-inv (f ⊕ g) (inr x) = inr $≡ ap-inv g x
 
 inv-ap [ f ]   x = bwd-fwd f x
-inv-ap id      x = 𝕣
+inv-ap id      x = ℙ.refl
 inv-ap (f ⁻¹)  x = ap-inv f x
 inv-ap (g ∘ f) x =
   ap g $≡ inv-ap f (ap⁻¹ g x)
@@ -333,3 +329,43 @@ Ubwd {A = A ⊗ C} {B = B ⊗ D} (f ⊗ g) k (t , u) x = fst f' ⊗ fst g' , snd
     u x
 Ubwd (f ⊕ g) k = {!!}
 -}
+
+infixr 5 _▸_
+_▸_ : ∀ {A B C}
+    → A ↔ B
+    → B ↔ C
+    → A ↔ C
+_▸_ = flip _∘_
+{-# INLINE _▸_ #-}
+
+𝟚 : U
+𝟚 = 𝟙 ⊕ 𝟙
+
+pattern 𝔽 = inl tt
+pattern 𝕋 = inr tt
+
+{-# DISPLAY inl ⊤.tt = 𝔽 #-}
+{-# DISPLAY inr ⊤.tt = 𝕋 #-}
+
+NOT : 𝟚 ↔ 𝟚
+NOT = [ ⊕σ ]
+
+-- Extend an iso with a control bit.
+C_ : ∀ {A}
+   → (f : A ↔ A)
+   → 𝟚 ⊗ A ↔ 𝟚 ⊗ A
+C f =
+  [ ⊗σ ]
+  ▸ [ δ ]
+  ▸ ( id
+    ⊕ f ⊗ id
+    )
+  ▸ [ δ ] ⁻¹
+  ▸ [ ⊗σ ] ⁻¹
+
+CNOT = C NOT
+
+toff : 𝟚 ⊗ 𝟚 ⊗ 𝟚 ↔ 𝟚 ⊗ 𝟚 ⊗ 𝟚
+toff = C C NOT
+
+foo = {!toff!}
