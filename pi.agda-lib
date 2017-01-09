@@ -1,0 +1,3 @@
+name:    pi
+depend:  agda-prelude
+include: src
